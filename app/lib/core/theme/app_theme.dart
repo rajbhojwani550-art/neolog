@@ -106,9 +106,10 @@ class AppTheme {
           foregroundColor: Colors.white,
         ),
         tabBarTheme: const TabBarTheme(
-          labelColor: AppColors.primary,
-          unselectedLabelColor: AppColors.textSecondary,
-          indicatorColor: AppColors.primary,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+          indicatorSize: TabBarIndicatorSize.tab,
         ),
       );
 
