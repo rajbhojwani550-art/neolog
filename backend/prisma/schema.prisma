@@ -1,0 +1,261 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  hospital    String
+  designation String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Baby {
+  id                   String    @id @default(uuid())
+  mrn                  String    @unique
+  firstName            String
+  lastName             String
+  dateOfBirth          DateTime
+  gaWeeks              Int
+  gaDays               Int
+  birthWeightGrams     Int
+  sex                  String
+  motherName           String
+  fatherName           String
+  motherAge            Int?
+  modeOfDelivery       String
+  apgarScore1min       Int?
+  apgarScore5min       Int?
+  admissionDate        DateTime
+  admissionReason      String
+  antenatalSteroids    String    @default("none")
+  antenatalHistory     String?
+  dischargeDate        DateTime?
+  status               String    @default("admitted")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  createdBy            String?
+
+  dailyLogs            DailyLog[]
+  growthMeasurements   GrowthMeasurement[]
+  ropScreenings        ROPScreening[]
+  ivhScreenings        IVHScreening[]
+  echoReports          EchoReport[]
+  hearingScreens       HearingScreen[]
+  newbornBloodSpots    NewbornBloodSpot[]
+  clinicalEvents       ClinicalEvent[]
+  medications          Medication[]
+  investigations       Investigation[]
+}
+
+model DailyLog {
+  id                     String   @id @default(uuid())
+  babyId                 String
+  baby                   Baby     @relation(fields: [babyId], references: [id])
+  logDate                DateTime
+  dayOfLife              Int
+  correctedGestationalAge String?
+
+  heartRate              Int?
+  respiratoryRate        Int?
+  temperature            Float?
+  spo2                   Int?
+  bloodPressureSystolic  Int?
+  bloodPressureDiastolic Int?
+  weight                 Float?
+  headCircumference      Float?
+  length                 Float?
+
+  respiratorySupport     String   @default("room air")
+  fio2Percent            Int?
+  peep                   Int?
+  pip                    Int?
+  rate                   Int?
+  tidalVolume            Float?
+  cpapPressure           Int?
+
+  feedType               String   @default("NPO")
+  feedVolumeMlPerKg      Float?
+  feedCaloriesDensity    Float?
+  totalFluidMlPerKg      Float?
+  ivfRate                Float?
+  ivfType                String?
+  tpn                    Boolean  @default(false)
+
+  generalExam            String?
+  cnsExam                String?
+  cvExam                 String?
+  respiratoryExam        String?
+  abdomenExam            String?
+  skinExam               String?
+  eyesExam               String?
+
+  activeProblemsList     Json     @default("[]")
+  plan                   String?
+  attendingDoctor        String?
+  notes                  String?
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([babyId, logDate])
+}
+
+model GrowthMeasurement {
+  id                String   @id @default(uuid())
+  babyId            String
+  baby              Baby     @relation(fields: [babyId], references: [id])
+  measurementDate   DateTime
+  weight            Float?
+  headCircumference Float?
+  length            Float?
+  correctedGA       String?
+  weightPercentile  Float?
+  hcPercentile      Float?
+  lengthPercentile  Float?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ROPScreening {
+  id                    String    @id @default(uuid())
+  babyId                String
+  baby                  Baby      @relation(fields: [babyId], references: [id])
+  screeningDate         DateTime
+  eyeExamined           String    @default("both")
+  rightEyeZone          String?
+  rightEyeStage         String?
+  leftEyeZone           String?
+  leftEyeStage          String?
+  plusDisease            Boolean   @default(false)
+  aggressivePosteriorROP Boolean  @default(false)
+  examinedBy            String?
+  treatment             String    @default("none")
+  nextExamDate          DateTime?
+  notes                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model IVHScreening {
+  id                          String    @id @default(uuid())
+  babyId                      String
+  baby                        Baby      @relation(fields: [babyId], references: [id])
+  screeningDate               DateTime
+  dayOfLife                   Int?
+  rightSideGrade              String    @default("none")
+  leftSideGrade               String    @default("none")
+  periventricularLeukomalacia Boolean   @default(false)
+  cysticPVL                   Boolean   @default(false)
+  radiologistName             String?
+  reportedBy                  String?
+  nextScanDate                DateTime?
+  findings                    String?
+  createdAt                   DateTime  @default(now())
+  updatedAt                   DateTime  @updatedAt
+}
+
+model EchoReport {
+  id                   String    @id @default(uuid())
+  babyId               String
+  baby                 Baby      @relation(fields: [babyId], references: [id])
+  reportDate           DateTime
+  dayOfLife            Int?
+  pda                  String    @default("closed")
+  pdaFlow              String?
+  pdaOnTreatment       Boolean   @default(false)
+  pdaTreatment         String    @default("none")
+  asd                  Boolean   @default(false)
+  asdSize              String?
+  vsd                  Boolean   @default(false)
+  vsdSize              String?
+  pulmonaryHypertension String   @default("none")
+  lvef                 Float?
+  cardiologistName     String?
+  notes                String?
+  nextEchoDate         DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model HearingScreen {
+  id          String    @id @default(uuid())
+  babyId      String
+  baby        Baby      @relation(fields: [babyId], references: [id])
+  screenDate  DateTime
+  method      String    @default("OAE")
+  rightEar    String    @default("pass")
+  leftEar     String    @default("pass")
+  repeatedOn  DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model NewbornBloodSpot {
+  id             String   @id @default(uuid())
+  babyId         String
+  baby           Baby     @relation(fields: [babyId], references: [id])
+  collectionDate DateTime
+  dayOfLife      Int?
+  status         String   @default("sent")
+  results        Json?
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ClinicalEvent {
+  id          String   @id @default(uuid())
+  babyId      String
+  baby        Baby     @relation(fields: [babyId], references: [id])
+  eventDate   DateTime
+  dayOfLife   Int?
+  category    String
+  title       String
+  description String?
+  performedBy String?
+  outcome     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Medication {
+  id         String    @id @default(uuid())
+  babyId     String
+  baby       Baby      @relation(fields: [babyId], references: [id])
+  drugName   String
+  indication String?
+  startDate  DateTime
+  stopDate   DateTime?
+  dose       String?
+  unit       String?
+  frequency  String?
+  route      String?
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Investigation {
+  id             String   @id @default(uuid())
+  babyId         String
+  baby           Baby     @relation(fields: [babyId], references: [id])
+  collectedDate  DateTime
+  reportDate     DateTime?
+  category       String
+  testName       String
+  result         String?
+  interpretation String   @default("normal")
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "neolog-web",
+      "runtimeExecutable": "C:\\tools\\nodejs\\node.exe",
+      "runtimeArgs": ["D:\\neolog\\serve.js"],
+      "port": 8080
+    }
+  ]
+}

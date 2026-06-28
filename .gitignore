@@ -1,0 +1,31 @@
+# Flutter
+app/.dart_tool/
+app/.packages
+app/build/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/*.iml
+app/.idea/
+app/.metadata
+app/pubspec.lock
+
+# Node
+backend/node_modules/
+backend/dist/
+backend/.env
+backend/package-lock.json
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Hive
+*.hive
+*.lock
