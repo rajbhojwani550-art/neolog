@@ -187,9 +187,20 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen>
       );
     }
 
+    final isUnder28Days = baby.dayOfLife <= 28;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Growth Chart'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Growth Chart', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            Text(
+              'Fenton 2013 • DOL ${baby.dayOfLife} • CGA ${baby.correctedGA}',
+              style: const TextStyle(fontSize: 11, color: Colors.white70),
+            ),
+          ],
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -199,32 +210,86 @@ class _GrowthScreenState extends ConsumerState<GrowthScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
         children: [
-          _GrowthTabContent(
-            baby: baby,
-            measurements: _measurements,
-            type: 'weight',
-            unit: 'g',
-          ),
-          _GrowthTabContent(
-            baby: baby,
-            measurements: _measurements,
-            type: 'hc',
-            unit: 'cm',
-          ),
-          _GrowthTabContent(
-            baby: baby,
-            measurements: _measurements,
-            type: 'length',
-            unit: 'cm',
+          // Early neonate banner
+          if (isUnder28Days)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              color: AppColors.warning.withOpacity(0.12),
+              child: Row(
+                children: [
+                  const Icon(Icons.child_care, size: 16, color: AppColors.warning),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'DOL ${baby.dayOfLife} — chart auto-zoomed to birth CGA ${baby.gestationalAge}. '
+                      'Day 28 milestone marked.',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.warning,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          // Birth weight prompt if no measurements
+          if (_measurements.isEmpty)
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, size: 16, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Tip: Start by adding birth weight as the first measurement — set the date to the birth date.',
+                      style: TextStyle(fontSize: 11, color: AppColors.primary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _GrowthTabContent(
+                  baby: baby,
+                  measurements: _measurements,
+                  type: 'weight',
+                  unit: 'g',
+                ),
+                _GrowthTabContent(
+                  baby: baby,
+                  measurements: _measurements,
+                  type: 'hc',
+                  unit: 'cm',
+                ),
+                _GrowthTabContent(
+                  baby: baby,
+                  measurements: _measurements,
+                  type: 'length',
+                  unit: 'cm',
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddMeasurement,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Add Measurement'),
       ),
     );
   }
@@ -278,19 +343,43 @@ class _GrowthTabContent extends StatelessWidget {
         else
           ...filteredMeasurements.reversed.map((m) {
             final date = DateTime.parse(m['measurementDate'] as String);
+            final dol = date.difference(baby.dateOfBirth).inDays + 1;
             final value = m[dataKey];
             final percentile = m[percentileKey];
             return ListTile(
-              title: Text('$value $unit'),
+              leading: CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.primary.withOpacity(0.1),
+                child: Text(
+                  'D$dol',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+              title: Text(
+                '$value $unit',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
               subtitle: Text(
                 '${AppDateUtils.formatDate(date)} • CGA ${m['correctedGA']}',
               ),
               trailing: percentile != null
-                  ? Text(
-                      'P${percentile.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: _percentileColor(percentile as double),
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: _percentileColor(percentile as double).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'P${(percentile as double).toStringAsFixed(0)}',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: _percentileColor(percentile),
+                          fontSize: 13,
+                        ),
                       ),
                     )
                   : null,
