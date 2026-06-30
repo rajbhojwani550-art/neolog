@@ -228,6 +228,20 @@ class _FentonChartState extends State<FentonChart> {
             ],
           ),
         ),
+        // Chart title
+        Padding(
+          padding: const EdgeInsets.only(top: 6, bottom: 0),
+          child: Text(
+            _chartTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
         // Controls row
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -395,6 +409,19 @@ class _FentonChartState extends State<FentonChart> {
       }
     }
     return (max * 1.1).ceilToDouble();
+  }
+
+  String get _chartTitle {
+    switch (widget.type) {
+      case 'weight':
+        return 'Fenton Chart for Weight';
+      case 'hc':
+        return 'Fenton Chart for Head Circumference';
+      case 'length':
+        return 'Fenton Chart for Length';
+      default:
+        return 'Fenton Preterm Growth Chart (2013)';
+    }
   }
 
   double _gridInterval(double range) {
