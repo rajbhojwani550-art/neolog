@@ -228,6 +228,13 @@ class _ScreeningsTab extends StatelessWidget {
           color: const Color(0xFF7B1FA2),
           onTap: () => context.go('/baby/$babyId/nbs'),
         ),
+        _ScreeningCard(
+          title: 'MBD Screening',
+          subtitle: 'Calcium, Phosphate & ALP',
+          icon: Icons.settings_input_composite,
+          color: const Color(0xFF5D4037),
+          onTap: () => context.go('/baby/$babyId/mbd'),
+        ),
       ],
     );
   }

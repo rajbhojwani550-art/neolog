@@ -16,6 +16,7 @@ import '../../features/screenings/ivh/screens/ivh_screen.dart';
 import '../../features/screenings/echo/screens/echo_screen.dart';
 import '../../features/screenings/hearing/screens/hearing_screen.dart';
 import '../../features/screenings/nbs/screens/nbs_screen.dart';
+import '../../features/screenings/mbd/screens/mbd_screen.dart';
 import '../../features/medications/screens/medications_screen.dart';
 import '../../features/events/screens/events_screen.dart';
 import '../../features/investigations/screens/investigations_screen.dart';
@@ -144,6 +145,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final id = state.pathParameters['id']!;
               return NbsScreen(babyId: id);
+            },
+          ),
+          GoRoute(
+            path: 'mbd',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return MbdScreen(babyId: id);
             },
           ),
           GoRoute(
