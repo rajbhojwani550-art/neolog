@@ -1,0 +1,1 @@
+ build\\web\\manifest.json:  D:\\neolog\\app\\web\\index.html D:\\neolog\\app\\web\\manifest.json
