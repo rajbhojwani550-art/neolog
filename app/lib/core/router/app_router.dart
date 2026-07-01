@@ -22,6 +22,7 @@ import '../../features/events/screens/events_screen.dart';
 import '../../features/investigations/screens/investigations_screen.dart';
 import '../../features/discharge/screens/discharge_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/calendar/screens/calendar_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -61,6 +62,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/patients',
             builder: (context, state) => const BabyListScreen(),
+          ),
+          GoRoute(
+            path: '/calendar',
+            builder: (context, state) => const CalendarScreen(),
           ),
           GoRoute(
             path: '/alerts',
@@ -199,7 +204,7 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
-  static const _routes = ['/dashboard', '/patients', '/alerts', '/settings'];
+  static const _routes = ['/dashboard', '/patients', '/calendar', '/alerts', '/settings'];
 
   @override
   Widget build(BuildContext context) {
@@ -221,6 +226,11 @@ class _MainShellState extends State<MainShell> {
             icon: Icon(Icons.child_care_outlined),
             activeIcon: Icon(Icons.child_care),
             label: 'Patients',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month_outlined),
+            activeIcon: Icon(Icons.calendar_month),
+            label: 'Calendar',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_outlined),
