@@ -27,6 +27,10 @@ class BabyDetailScreen extends ConsumerWidget {
       length: 8,
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go('/patients'),
+          ),
           title: Text(baby.fullName),
           actions: [
             IconButton(
